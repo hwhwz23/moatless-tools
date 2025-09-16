@@ -353,7 +353,7 @@ class BaseCompletionModel(MoatlessComponent, ABC):
                         structured_outputs, text_response, thought = await self._validate_completion(
                             completion_response=completion_response,
                         )
-
+                        # print(f"structured_outputs={structured_outputs}, text_response={text_response}, thought={thought}")
                         # Run post validation if provided and raise CompletionRetryError if it fails
                         if self._post_validation_fn:
                             # Keep the thought value, only update structured_outputs and text_response
@@ -399,7 +399,7 @@ class BaseCompletionModel(MoatlessComponent, ABC):
                             logger.warning(f"Post validation failed with retry messages: {e.retry_messages}")
                             messages.extend(e.retry_messages)
                         else:
-                            logger.warning(f"Post validation failed with retry message: {e}")
+                            logger.warning(f"Post validation failed with retry message: {e}, tool_call_id: {tool_call_id}")
                             if tool_call_id:
                                 messages.append(
                                     ChatCompletionToolMessage(role="tool", content=str(e), tool_call_id=tool_call_id)  # type: ignore

@@ -173,7 +173,7 @@ def main():
     parser.add_argument(
         "--model",
         "-m",
-        default="gpt-4o-mini-2024-07-18",
+        # default="gpt-4o-mini-2024-07-18",
         help="Model ID to use (default: gpt-4o-mini-2024-07-18). For backward compatibility, same as --model-id.",
     )
     parser.add_argument("--model-id", help="Model ID to use (replaces entire completion model configuration)")
@@ -203,11 +203,11 @@ def main():
         print("Error: Cannot specify both --model-id and --litellm-model-name")
         sys.exit(1)
 
-    if (
-        args.model != "gpt-4o-mini-2024-07-18" and args.litellm_model_name
-    ):  # Using non-default --model with --litellm-model-name
-        print("Error: Cannot specify both --model and --litellm-model-name")
-        sys.exit(1)
+    # if (
+        # args.model != "gpt-4o-mini-2024-07-18" and args.litellm_model_name
+    # ):  # Using non-default --model with --litellm-model-name
+        # print("Error: Cannot specify both --model and --litellm-model-name")
+        # sys.exit(1)
 
     logger.info("Loading environment variables")
     load_dotenv(".env.local")

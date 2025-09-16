@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.swebench_index/
 build/
 develop-eggs/
 dist/

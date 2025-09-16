@@ -61,11 +61,11 @@ async def run_swebench_instance(project_id: str, trajectory_id: str, node_id: in
         if not index_store_dir:
             raise ValueError("INDEX_STORE_DIR is not set")
 
-        logger.info(f"Using index store dir: {index_store_dir}")
+        logger.info(f"Using index store dir: {index_store_dir}/{trajectory_id}")
         from moatless.index.code_index import CodeIndex
 
         code_index = CodeIndex.from_persist_dir(
-            persist_dir=index_store_dir,
+            persist_dir=index_store_dir+'/'+trajectory_id,
             file_repo=repository,
         )
 

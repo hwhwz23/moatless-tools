@@ -19,6 +19,7 @@ class CommentStrategy(Enum):
 class IndexSettings(BaseModel):
     embed_model: str = Field(default="text-embedding-3-small", description="The embedding model to use.")
     dimensions: int = Field(default=1536, description="The number of dimensions of the vectors.")
+    # dimensions: int = Field(default=896, description="The number of dimensions of the vectors.")
 
     language: str = Field(default="python", description="The language of the code.")
     min_chunk_size: int = Field(default=100, description="The minimum chunk size.")

@@ -144,10 +144,17 @@ def main():
     load_dotenv()
 
     # Initialize index settings
-    index_settings = IndexSettings(embed_model=args.embed_model, dimensions=1024)
+    index_settings = IndexSettings(embed_model=args.embed_model, dimensions=1536)
 
     # Load instances
     instance_by_id = get_moatless_instances()
+
+    with open(f"./moatless/evaluation/datasets/{args.dataset}_dataset.json", "r") as f:
+        dataset_instances = json.load(f)["instance_ids"]
+
+    instance_by_id = {k: v for k, v in instance_by_id.items() if k in dataset_instances}
+
+    print(instance_by_id.keys())
 
     if args.prefix:
         # Filter and sort instances by prefix

@@ -124,9 +124,9 @@ async def setup_workspace(project_id: str, trajectory_id: str) -> Workspace:
         index_store_dir = None
 
     if index_store_dir:
-        logger.info(f"Using index store dir: {index_store_dir}")
+        logger.info(f"Using index store dir: {index_store_dir}/{trajectory_id}")
         code_index = CodeIndex.from_persist_dir(
-            persist_dir=index_store_dir,
+            persist_dir=index_store_dir+'/'+trajectory_id,
             file_repo=repository,
         )
     else:

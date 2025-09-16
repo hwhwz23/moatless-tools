@@ -101,7 +101,9 @@ class SimpleFaissVectorStore(BasePydanticVectorStore):
     @classmethod
     def from_defaults(cls, d: int = 1536):
         faiss_index = faiss.IndexIDMap(faiss.IndexFlatL2(1536))
+        # faiss_index = faiss.IndexIDMap(faiss.IndexFlatL2(896))
         return cls(faiss_index, d)
+        # return cls(faiss_index, 896)
 
     @property
     def client(self) -> Any:
@@ -138,6 +140,7 @@ class SimpleFaissVectorStore(BasePydanticVectorStore):
         vectors_ndarray = np.array(embeddings)
         ids_ndarray = np.array(ids)
 
+        # print(f"Adding {vectors_ndarray.shape}, {ids_ndarray.shape} vectors to index.", flush=True)
         self._faiss_index.add_with_ids(vectors_ndarray, ids_ndarray)
 
         return [node.node_id for node in nodes]

@@ -55,6 +55,7 @@ dependencies = [
     "kubernetes-asyncio<33.0.0,>=32.3.2",
     "azure-storage-blob<13.0.0,>=12.26.0",
     "azure-monitor-opentelemetry<2.0.0,>=1.6.13",
+    "llama-index-embeddings-ollama>=0.8.3",
 ]
 
 [dependency-groups]

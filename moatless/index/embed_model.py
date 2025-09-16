@@ -22,6 +22,14 @@ def get_embed_model(model_name: str) -> Optional[BaseEmbedding]:
             truncation=True,
             embed_batch_size=60,
         )
+    elif model_name.startswith("jina"):
+        try:
+            from llama_index.embeddings.ollama import OllamaEmbedding
+        except ImportError as e:
+            raise ImportError(
+                "llama-index-embeddings-ollama is not installed. Please install it using `pip install llama-index-embeddings-ollama`"
+            ) from e
+        return OllamaEmbedding(model_name=model_name.split("/")[1], embed_batch_size=60)
     else:
         # Assumes OpenAI otherwise
         try:

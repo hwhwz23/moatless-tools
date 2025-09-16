@@ -106,18 +106,22 @@ Important: You can include multiple Action blocks to perform sequential actions.
         Raises:
             CompletionRejectError: For invalid format that should be retried
         """
-
+        # print(f"completion_response={completion_response}")
         # Fall back to JSON completion model if the action is not an ActionArguments
         if not self._supports_react_format():
+            # print(f"fallback to JSON completion model")
             structured_outputs, text_response, thoughts = await super()._validate_completion(completion_response)
             return structured_outputs, text_response, thoughts
 
         try:
+            # print(f"validate react format")
             response_text = completion_response.choices[0].message.content
+            # print(f"response_text={response_text}")
             self._validate_react_format(response_text)
 
             # Get all action blocks
             thought, action_blocks = self._extract_action_blocks(response_text)
+            # print(f"thought={thought}, action_blocks={action_blocks}")
             validated_actions: list[ResponseSchema] = []
 
             # Limit the number of actions to the max_actions value
@@ -188,9 +192,7 @@ Important: You can include multiple Action blocks to perform sequential actions.
             ValueError: If format is invalid
         """
         lines = [line.strip() for line in response_text.split("\n") if line.strip()]
-
-        action_count = sum(1 for line in lines if line.lower().startswith("action:"))
-
+        action_count = sum(1 for line in lines if line.lower().replace("\"", "").startswith("action:"))
         if action_count < 1:
             raise CompletionRetryError("Response must have one 'Action:' section")
 

@@ -207,7 +207,8 @@ class DockerRunner(BaseRunner):
                 "MOATLESS_DIR=/data/moatless",
                 "MOATLESS_SOURCE_DIR=/opt/moatless/moatless",
                 "NLTK_DATA=/data/nltk_data",
-                "INDEX_STORE_DIR=/data/index_store",
+                # "INDEX_STORE_DIR=/data/index_store",
+                "INDEX_STORE_DIR=/data/swebench_index",
                 "REPO_DIR=/testbed",
                 "SKIP_CONDA_ACTIVATE=true",
                 "INSTANCE_PATH=/data/instance.json",
@@ -241,10 +242,10 @@ class DockerRunner(BaseRunner):
                     env_vars.append(f"OTEL_{key}={value}")
 
             # Create command to run Docker container
-            cmd = ["docker", "run", "--name", container_name, "-d"]
+            cmd = ["docker", "run", "--network", "host", "--name", container_name, "-d"]
 
             # Add network to connect to docker-compose services (like Redis)
-            cmd.extend(["--network", self.network_name])
+            # cmd.extend(["--network", self.network_name])
 
             # Add platform flag based on architecture configuration
             if self.is_arm64 and self.architecture == "x86_64":
@@ -290,14 +291,16 @@ class DockerRunner(BaseRunner):
             # Add volume mounts for components
             if self.components_path:
                 cmd.extend(["-v", f"{self.components_path}:/opt/components"])
+                
+            cmd.extend(["-v", f".swebench_index:/data/swebench_index"])
 
             # Add volume mounts for source code
             if self.moatless_source_dir:
                 logger.info(f"Mounting {self.moatless_source_dir}:/opt/moatless/moatless")
                 cmd.extend(["-v", f"{self.moatless_source_dir}:/opt/moatless/moatless"])
                 # Also mount the lockfile to ensure dependency compatibility
-                cmd.extend(["-v", f"{self.moatless_source_dir}/uv.lock:/opt/moatless/uv.lock"])
-                cmd.extend(["-v", f"{self.moatless_source_dir}/pyproject.toml:/opt/moatless/pyproject.toml"])
+                cmd.extend(["-v", f"{self.moatless_source_dir}/../uv.lock:/opt/moatless/uv.lock"])
+                cmd.extend(["-v", f"{self.moatless_source_dir}/../pyproject.toml:/opt/moatless/pyproject.toml"])
                 cmd.extend(["-e", "PYTHONPATH=/opt/moatless/moatless:$PYTHONPATH"])
 
             args = create_job_args(project_id, trajectory_id, job_func, node_id)

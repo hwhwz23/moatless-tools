@@ -15,7 +15,7 @@ from llama_index.core.vector_stores import VectorStoreQuery
 
 from moatless.benchmark.swebench import setup_swebench_repo, get_repo_dir_name
 from moatless.benchmark.swebench.utils import create_repository
-from moatless.evaluation.utils import calculate_estimated_context_window, get_moatless_instance, get_moatless_instances
+from moatless.evaluation.utils import calculate_estimated_context_window, get_moatless_instance, get_moatless_instances, get_moatless_instance_legancy
 from moatless.index import IndexSettings, CodeIndex
 from moatless.index.simple_faiss import SimpleFaissVectorStore
 from moatless.index.epic_split import EpicSplitter
@@ -40,12 +40,17 @@ def create_index(instance_id: str, index_settings: IndexSettings, num_workers: i
     persist_dir = get_persist_dir(instance)
     code_index.persist(persist_dir=persist_dir)
 
+import asyncio
 
 def evaluate_index(code_index: CodeIndex, instance: dict):
     query = instance["problem_statement"]
-    results = code_index._vector_search(query, top_k=1000)
+    results = asyncio.run(code_index._vector_search(query, top_k=1000))
 
     expected_changes, sum_tokens = calculate_estimated_context_window(instance, results)
+
+    print(expected_changes)
+    print(sum_tokens)
+
     all_matching_context_window = None
     any_matching_context_window = None
 
@@ -83,7 +88,8 @@ def evaluate_index(code_index: CodeIndex, instance: dict):
 
 
 def evaluate_instance(instance_id: str) -> dict:
-    instance = get_moatless_instance(instance_id)
+    # instance = get_moatless_instance(instance_id)
+    instance = get_moatless_instance_legancy(instance_id, split="verified")
 
     code_index = CodeIndex.from_persist_dir(get_persist_dir(instance))
 
@@ -286,7 +292,8 @@ def read_store():
 
 def load_dataset_instances(dataset_name: str) -> set[str]:
     """Load instance IDs from a dataset file."""
-    datasets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets")
+    # datasets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets")
+    datasets_dir = './moatless/evaluation/datasets'
     dataset_path = os.path.join(datasets_dir, f"{dataset_name}_dataset.json")
 
     if not os.path.exists(dataset_path):
@@ -305,7 +312,8 @@ def extract_number(instance_id: str) -> int:
 def main():
     parser = argparse.ArgumentParser(description="Evaluate code index performance")
     parser.add_argument("--vector-store-dir", required=True, help="Directory to store vector index files")
-    parser.add_argument("--embed-model", default="voyage-code-3", help="Embedding model to use")
+    # parser.add_argument("--embed-model", default="voyage-code-3", help="Embedding model to use")
+    parser.add_argument("--embed-model", default="jinaai/jina-code-embeddings-1.5b", help="Embedding model to use")
     parser.add_argument("--instance-ids", nargs="*", help="Specific instance IDs to evaluate")
     parser.add_argument("--prefix", help="Process all instances with this prefix")
     parser.add_argument("--dataset", help="Dataset name to load instance IDs from")
@@ -327,7 +335,7 @@ def main():
     # Set up index settings
     index_settings = IndexSettings(
         embed_model=args.embed_model,
-        dimensions=1024,
+        dimensions=1536,
     )
 
     # Get instance IDs either from direct input, prefix, or dataset

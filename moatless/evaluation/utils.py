@@ -90,16 +90,24 @@ def get_moatless_instance(instance_id: str, split: str | None = None):
     return get_swebench_instance(instance_id, split)
 
 
-def get_swebench_instance(instance_id: str, split: str | None = None):
+def get_moatless_instance_legancy(instance_id: str, split: str | None = None):
+    return get_swebench_instance(instance_id, split, legacy=True)
+
+
+def get_swebench_instance(instance_id: str, split: str | None = None, legacy=False):
     global _moatless_instances
     if not _moatless_instances:
-        load_moatless_datasets(split)
+        if legacy:
+            _load_legacy_datasets(split)
+        else:
+            load_moatless_datasets(split)
 
     instance = _moatless_instances.get(instance_id)
     if not instance:
         raise ValueError(f"Instance {instance_id} not found.")
 
     return dict(instance)  # Return a copy to prevent external modifications
+
 
 
 def find_relevant_spans(original_block: Module, updated_block: Module):
@@ -381,7 +389,9 @@ def missing_expected_test_files(
 
 
 def calculate_estimated_context_window(instance, results):
+
     patch = instance.get("patch") or instance.get("golden_patch")
+
     patch_diffs = get_diff_lines(patch)
     expected_changes = []
 
@@ -401,7 +411,7 @@ def calculate_estimated_context_window(instance, results):
         )
 
     sum_tokens = 0
-
+    
     for i, result in enumerate(results):
         sum_tokens += result.tokens
         for change in expected_changes:
