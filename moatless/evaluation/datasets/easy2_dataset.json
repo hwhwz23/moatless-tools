@@ -1,0 +1,7 @@
+{
+  "name": "easy2",
+  "description": "Easy instances solved by at least 85% of all submissions to SWE-Bench.",
+  "instance_ids": [
+    "django__django-13658"
+  ]
+}

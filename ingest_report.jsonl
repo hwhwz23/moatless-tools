@@ -1,0 +1,9 @@
+{"instance_id": "sphinx-doc__sphinx-10323", "vectors": 3078, "indexed_tokens": 880761}
+{"instance_id": "sphinx-doc__sphinx-10435", "vectors": 573, "indexed_tokens": 197415}
+{"instance_id": "django__django-12143", "vectors": 11796, "indexed_tokens": 3120495}
+{"instance_id": "django__django-12155", "vectors": 46, "indexed_tokens": 19687}
+{"instance_id": "django__django-12193", "vectors": 125, "indexed_tokens": 55365}
+{"instance_id": "django__django-11099", "vectors": 11454, "indexed_tokens": 3028787}
+{"instance_id": "django__django-13658", "vectors": 4945, "indexed_tokens": 1495310}
+{"instance_id": "django__django-16255", "vectors": 12934, "indexed_tokens": 3514243}
+{"instance_id": "django__django-16527", "vectors": 1286, "indexed_tokens": 384564}
