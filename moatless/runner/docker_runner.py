@@ -261,17 +261,21 @@ class DockerRunner(BaseRunner):
                 logger.info(f"Using default platform (no --platform flag)")
 
             # Add memory limits if specified
-            effective_memory_limit = memory_limit or self.memory_limit
-            effective_memory_swap_limit = memory_swap_limit or self.memory_swap_limit
+            # effective_memory_limit = memory_limit or self.memory_limit
+            # effective_memory_swap_limit = memory_swap_limit or self.memory_swap_limit
 
-            if effective_memory_limit:
-                cmd.extend(["--memory", effective_memory_limit])
+            # if effective_memory_limit:
+            #     cmd.extend(["--memory", effective_memory_limit])
 
-            if effective_memory_swap_limit:
-                cmd.extend(["--memory-swap", effective_memory_swap_limit])
-            elif effective_memory_limit:
-                # If memory limit is set but swap limit is not, default to twice the memory limit
-                cmd.extend(["--memory-swap", effective_memory_limit])
+            # if effective_memory_swap_limit:
+            #     cmd.extend(["--memory-swap", effective_memory_swap_limit])
+            # elif effective_memory_limit:
+            #     # If memory limit is set but swap limit is not, default to twice the memory limit
+            #     cmd.extend(["--memory-swap", effective_memory_limit])
+            
+            cmd.extend(["--memory", "16g"])
+            cmd.extend(["--cpuset-cpus", "2"])
+            
             
             # Add ulimit for file descriptors to prevent "Too many open files" errors
             cmd.extend(["--ulimit", "nofile=65536:65536"])
